@@ -29,6 +29,7 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.VideoController
 import com.google.android.gms.ads.VideoOptions
 import com.google.android.gms.ads.admanager.AdManagerAdRequest
+import com.google.android.gms.ads.nativead.MediaView
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
@@ -156,12 +157,9 @@ class MainActivity : AppCompatActivity() {
     // native ad view with this native ad.
     nativeAdView.setNativeAd(nativeAd)
 
-    // Get the video controller for the ad. One will always be provided, even if the ad doesn't
-    // have a video asset.
-    val vc = nativeAd.mediaContent?.videoController
-
     // Updates the UI to say whether or not this ad has a video asset.
-    if (vc != null && vc.hasVideoContent()) {
+    if (nativeAd.mediaContent.hasVideoContent()) {
+      val vc = nativeAd.mediaContent?.videoController
       mainActivityBinding.videostatusText.text =
         String.format(
           Locale.getDefault(),
@@ -199,9 +197,7 @@ class MainActivity : AppCompatActivity() {
     customTemplateBinding.simplecustomHeadline.text = nativeCustomFormatAd.getText("Headline")
     customTemplateBinding.simplecustomCaption.text = nativeCustomFormatAd.getText("Caption")
 
-    // Get the video controller for the ad. One will always be provided, even if the ad doesn't
-    // have a video asset.
-    val vc = nativeCustomFormatAd.videoController
+    val vc = nativeCustomFormatAd.mediaContent.videoController
 
     // Create a new VideoLifecycleCallbacks object and pass it to the VideoController. The
     // VideoController will call methods on this object when events occur in the video
@@ -217,12 +213,12 @@ class MainActivity : AppCompatActivity() {
         }
       }
 
-    // Apps can check the VideoController's hasVideoContent property to determine if the
+    // Apps can check the MediaContent's hasVideoContent property to determine if the
     // NativeCustomFormatAd has a video asset.
-    if (vc.hasVideoContent()) {
-      customTemplateBinding.simplecustomMediaPlaceholder.addView(
-        nativeCustomFormatAd.getVideoMediaView()
-      )
+    if (nativeCustomFormatAd.mediaContent.hasVideoContent()) {
+      val mediaView: MediaView
+      mediaView.setMediaContent(nativeCustomFormatAd.mediaContent)
+      customTemplateBinding.simplecustomMediaPlaceholder.addView(mediaView)
       // Kotlin doesn't include decimal-place formatting in its string interpolation, but
       // good ol' String.format works fine.
       mainActivityBinding.videostatusText.text =

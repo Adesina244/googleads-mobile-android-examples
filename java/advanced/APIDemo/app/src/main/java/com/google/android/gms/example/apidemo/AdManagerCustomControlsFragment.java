@@ -17,6 +17,7 @@ package com.google.android.gms.example.apidemo;
 
 import android.content.res.Resources;
 import android.os.Bundle;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,6 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.fragment.app.Fragment;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.LoadAdError;
@@ -121,7 +121,6 @@ public class AdManagerCustomControlsFragment extends Fragment {
     ((TextView) adView.getBodyView()).setText(nativeAd.getBody());
     ((Button) adView.getCallToActionView()).setText(nativeAd.getCallToAction());
     ((ImageView) adView.getIconView()).setImageDrawable(nativeAd.getIcon().getDrawable());
-    MediaView mediaView = adView.findViewById(R.id.ad_media);
 
     // These assets aren't guaranteed to be in every NativeAd, so it's important to check
     // before trying to display them.
@@ -183,14 +182,14 @@ public class AdManagerCustomControlsFragment extends Fragment {
 
     FrameLayout mediaPlaceholder = adView.findViewById(R.id.simplecustom_media_placeholder);
 
-    // Get the video controller for the ad. One will always be provided, even if the ad doesn't
-    // have a video asset.
-    VideoController vc = nativeCustomFormatAd.getVideoController();
-
-    // Apps can check the VideoController's hasVideoContent property to determine if the
+    // Apps can check the MediaContent's hasVideoContent property to determine if the
     // NativeCustomTemplateAd has a video asset.
-    if (vc.hasVideoContent()) {
-      mediaPlaceholder.addView(nativeCustomFormatAd.getVideoMediaView());
+    if (nativeCustomFormatAd.getMediaContent().hasVideoContent()) {
+      VideoController vc = nativeCustomFormatAd.getVideoController();
+      MediaView mediaView = new MediaView(getActivity().getApplicationContext());
+      mediaView.setMediaContent(nativeCustomFormatAd.getMediaContent());
+      mediaPlaceholder.addView(mediaView);
+      customControlsView.setVideoController(vc);
     } else {
       ImageView mainImage = new ImageView(getActivity());
       mainImage.setAdjustViewBounds(true);
@@ -204,7 +203,6 @@ public class AdManagerCustomControlsFragment extends Fragment {
       });
       mediaPlaceholder.addView(mainImage);
     }
-    customControlsView.setVideoController(vc);
 
     refresh.setEnabled(true);
   }
