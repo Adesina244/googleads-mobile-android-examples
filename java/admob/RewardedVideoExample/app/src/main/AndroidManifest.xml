@@ -9,10 +9,10 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
-        <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
+        <!-- Sample AdMob App ID:  ca-app-pub-3910663396545158/9353960547-->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-3910663396545158~4082961767"/>
 
         <activity
             android:exported="true"
